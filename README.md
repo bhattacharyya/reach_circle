@@ -3,7 +3,7 @@ Simple program to practice reinforcement learning
 
 A simple game designed to understand reinforcement learning using Q-Table
 
-***reach_circle_commandline.py - ***
+***reach_circle_commandline.py -***
 
 Extremely fast exploration with fixed starting point but no visuals
 
@@ -11,7 +11,7 @@ Extremely fast exploration with fixed starting point but no visuals
 
 Visualize the post reinforcement learning performance from above script
 
-***reach_circle_fromanywhere_cl.py - ***
+***reach_circle_fromanywhere_cl.py -***
 
 Same as reach_circle_commandline.py but multiple possible starting points
 
