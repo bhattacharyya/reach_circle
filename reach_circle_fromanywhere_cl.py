@@ -1,6 +1,4 @@
 #!/usr/bin/python
-from tkinter import *
-from tkinter.ttk import * 
 import random
 import time
 import numpy as np
@@ -9,7 +7,7 @@ import numpy as np
 alpha = 0.9
 gamma = 1.0
 epsilon = 0.0
-episodes = 1000
+episodes = 5000
 
 mov_list = [-20,-10,10,20]
 steps = 0
@@ -56,16 +54,17 @@ def movement(): # Movement of Green Ball
 		reward = 0
 		state = list(state_space.keys())[list(state_space.values()).index((pos_x1, pos_y1))]
 		steps += 1
-		#reward = -1
+
 		if game % episodes == 0:	
 			end = 0
 			np.savetxt("qtable.csv", q_table, delimiter=",")
 			fout.write("qtable saved at " + str(steps) + " steps\n")
+			print("saved qtable")
 
 		if steps % 200 == 0:
 			checkpoint = steps
 			game += 1
-			print("Game : "+str(self.game) + " lost")
+			print("Game : "+str(game) + " lost")
 			fout.write(str(steps) + " adjusting, time up\n")
 			fout.write("game "+str(game) + " lost\n")
 			fout.flush()
@@ -73,14 +72,10 @@ def movement(): # Movement of Green Ball
 			rand_pos_y1 = random.choice([80,120,240,280]) 
 			new_x1 = (rand_pos_x1 - pos_x1)
 			new_y1 = (rand_pos_y1 - pos_y1)
-			#canvas.move(circle, new_x1, new_y1)
 			pos_x1 += new_x1
 			pos_y1 += new_y1		
 
-		if steps % 1000 == 0:
-			print("finished game : ",game)
-
-		if game < 2000000:
+		if game < 20000000: #arbitrarily chosen high value
 			x1 = random.choice(mov_list)
 			y1 = random.choice(mov_list)
 			action = list(action_space.keys())[list(action_space.values()).index((x1, y1))]
@@ -93,7 +88,7 @@ def movement(): # Movement of Green Ball
 			else:
 				action = np.argmax(q_table[state])
 				x1, y1 = action_space[action]
-			#print("suggested",x1, y1)
+
 
 		fout.write("Moving by "+str(x1)+", "+str(y1))
 
@@ -110,15 +105,12 @@ def movement(): # Movement of Green Ball
 		pos_x1 += x1
 		pos_y1 += y1
 
-		next_state = list(state_space.keys())[list(state_space.values()).index((pos_x1, pos_y1))]
-		next_max = np.max(q_table[next_state])
-
 		fout.write("Now at "+str(pos_x1)+", "+str(pos_y1)+"\n")
 
 		if pos_x1 in [240,250,260] and pos_y1 in [170,180,190]:
 			reward = 100
 			game += 1
-			print("Game : "+str(self.game) + " won")
+			print("Game : "+str(game) + " won")
 			fout.write(str(steps) + " adjusting, target found "+str(pos_x1) +", " + str(pos_y1) + "\n")
 			steps = checkpoint
 			fout.write("Resetting to checkpoint steps "+str(checkpoint)+"\n")
@@ -133,12 +125,13 @@ def movement(): # Movement of Green Ball
 			pos_y1 += new_y1
 
 		fout.write("Reward for the step : "+str(reward)+"\n")
+
 		old_q_value = q_table[state, action]
-		
+		next_state = list(state_space.keys())[list(state_space.values()).index((pos_x1, pos_y1))]
+		next_max = np.max(q_table[next_state])
 		new_value = old_q_value + alpha * (reward + gamma * next_max)
 		q_target = reward + gamma * next_max
 		q_delta = q_target - old_q_value
 		q_table[state, action] = old_q_value + alpha * q_delta
-
 
 movement()

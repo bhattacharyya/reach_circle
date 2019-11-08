@@ -6,12 +6,10 @@ import time
 import numpy as np
 
 # Hyperparameters
-alpha = 0.85
-gamma = 0.9
-epsilon = 1.0
+alpha = 0.9
+gamma = 1.0
 freq = 100
 
-start_time = time.time()
 mov_list = [-20,-10,10,20]
 steps = 0
 
@@ -33,8 +31,7 @@ for n in mov_list:
 		temp_list.append((m,n))
 for k in range(16):
 	action_space[k] = temp_list[k]
-#print(action_space)
-#q_table = np.zeros([len(state_space),len(action_space)])
+
 q_table = np.loadtxt("qtable.csv",delimiter=',')
 print(q_table)
 
@@ -43,6 +40,7 @@ class GFG:
 	
 	def __init__(self, master = None): 
 		self.steps = 0
+		self.checkpoint = 0
 		self.master = master 
 		self.pos_x1 = 50
 		self.pos_y1 = 80 
@@ -65,17 +63,17 @@ class GFG:
 
 
 	def movement(self): # Movement of Green Ball
-		# This is where the move() method is called 
-		# This moves the circle to x, y coordinates 
 
 		self.steps += 1
 		
 		if self.steps % 200 == 0:
+			self.checkpoint = self.steps
 			self.game += 1
-			#self.reward = -1
+			print("Game : "+str(self.game) + " lost")
 			fout.write(str(self.steps) + " adjusting, time up\n")
 			fout.write("game "+str(self.game) + " lost\n")
 			fout.flush()
+			self.steps = self.checkpoint
 			rand_pos_x1 = random.choice([50,100,150,200,300,350,400])
 			rand_pos_y1 = random.choice([80,120,240,280]) 
 			new_x1 = (rand_pos_x1 - self.pos_x1)
@@ -87,17 +85,7 @@ class GFG:
 		
 		state = list(state_space.keys())[list(state_space.values()).index((self.pos_x1, self.pos_y1))]
 		action = np.argmax(q_table[state])
-
-	
-		if random.random() < epsilon:
-
-			self.x1 = random.choice(mov_list)
-			self.y1 = random.choice(mov_list)
-		else:
-			self.x1, self.y1 = action_space[action]
-			#print(action_space[action])
-			#print("suggested",self.x1, self.y1)
-
+		self.x1, self.y1 = action_space[action]
 		
 		if self.pos_x1 > 450:
 			self.x1 = -10
@@ -109,9 +97,8 @@ class GFG:
 			self.y1 = 10  
 
 		if self.pos_x1 in [240,250,260] and self.pos_y1 in [170,180,190]:
-			#print("green yellow collission ",self.steps)
-			#self.reward = 1
 			self.game += 1
+			print("Game : "+str(self.game) + " won")
 			fout.write(str(self.steps) + " adjusting, target found\n")
 			fout.write("game "+str(self.game) + " won\n")
 			fout.flush()
