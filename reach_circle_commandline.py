@@ -1,6 +1,4 @@
 #!/usr/bin/python
-from tkinter import *
-from tkinter.ttk import * 
 import random
 import time
 import numpy as np
