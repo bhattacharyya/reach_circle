@@ -26,5 +26,7 @@ Visualize exploration followed by gradually increasing exploitation
 ***Key parameters:***
 
 alpha - learning rate
+
 epsilon - exploration threshold
+
 gamma - discount factor for rewards from events far in time
