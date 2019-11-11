@@ -7,7 +7,7 @@ import numpy as np
 alpha = 0.9
 gamma = 1.0
 epsilon = 0.0
-episodes = 5000
+episodes = 100000
 
 mov_list = [-20,-10,10,20]
 steps = 0
@@ -107,7 +107,7 @@ def movement(): # Movement of Green Ball
 
 		fout.write("Now at "+str(pos_x1)+", "+str(pos_y1)+"\n")
 
-		if pos_x1 in [240,250,260] and pos_y1 in [170,180,190]:
+		if pos_x1 == 250 and pos_y1 == 180:
 			reward = 100
 			game += 1
 			print("Game : "+str(game) + " won")
