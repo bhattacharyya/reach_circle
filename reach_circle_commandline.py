@@ -7,8 +7,10 @@ import numpy as np
 alpha = 0.9
 gamma = 1.0
 epsilon = 0.0
-episodes = 200 # Number of games to be played
+episodes = 1000 # Number of games to be played
 mov_list = [-20,-10,10,20] # Possible changes to x or y position
+initial_pos_x1 = 50
+initial_pos_y1 = 80
 
 fout = open("logfile.txt","w")
 
@@ -37,8 +39,8 @@ def movement(): # Movement of Green Ball
 	# Set local variables
 	steps = 0
 	checkpoint = 0
-	pos_x1 = 50 # x coordinate
-	pos_y1 = 80 # x coordinate
+	pos_x1 = initial_pos_x1 # x coordinate
+	pos_y1 = initial_pos_y1 # y coordinate
 	x1 = 10 # movement size in x direction
 	y1 = 10 # movement size in y direction
 	game = 1
@@ -66,9 +68,10 @@ def movement(): # Movement of Green Ball
 			fout.write(str(steps) + " adjusting, time up\n")
 			fout.write("game "+str(game) + " lost\n")
 			fout.flush()
+
 			# Reset to initial position
-			new_x1 = (50 - pos_x1)
-			new_y1 = (80 - pos_y1)
+			new_x1 = (initial_pos_x1 - pos_x1)
+			new_y1 = (initial_pos_y1 - pos_y1)
 			pos_x1 += new_x1
 			pos_y1 += new_y1		
 
@@ -77,7 +80,6 @@ def movement(): # Movement of Green Ball
 			x1 = random.choice(mov_list)
 			y1 = random.choice(mov_list)
 			action = list(action_space.keys())[list(action_space.values()).index((x1, y1))]
-			fout.write("Action randomly chosen : "+str(action)+"\n")
 		else:
 			# Exploit based on epsilon probability
 			if random.random() < epsilon:
@@ -87,9 +89,6 @@ def movement(): # Movement of Green Ball
 			else:
 				action = np.argmax(q_table[state])
 				x1, y1 = action_space[action]
-
-
-		fout.write("Moving by "+str(x1)+", "+str(y1))
 
 		# Bounce back from boundaries
 		if pos_x1 > 479:
@@ -105,25 +104,19 @@ def movement(): # Movement of Green Ball
 		pos_x1 += x1
 		pos_y1 += y1
 
-		fout.write("Now at "+str(pos_x1)+", "+str(pos_y1)+"\n")
-
 		if pos_x1 == 250 and pos_y1 == 180:
 			reward = 100
 			game += 1
 			print("Game : "+str(game) + " won")
 			win_counter += 1
-			fout.write(str(steps) + " adjusting, target found "+str(pos_x1) +", " + str(pos_y1) + "\n")
-			steps = checkpoint
-			fout.write("Resetting to checkpoint steps "+str(checkpoint)+"\n")
+			steps = checkpoint # Reset number of steps to the start of the run
 			fout.write("game "+str(game) + " won\n")
 			fout.flush()
 			# Reset to initial position
-			new_x1 = (50 - pos_x1)
-			new_y1 = (80 - pos_y1)
+			new_x1 = (initial_pos_x1 - pos_x1)
+			new_y1 = (initial_pos_y1 - pos_y1)
 			pos_x1 += new_x1
 			pos_y1 += new_y1
-
-		fout.write("Reward for the step : "+str(reward)+"\n")
 		
 		# Update the Q table
 		old_q_value = q_table[state, action]
