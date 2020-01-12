@@ -23,6 +23,14 @@ Visualize the post reinforcement learning performance from multi startpoint scri
 
 Visualize exploration followed by gradually increasing exploitation 
 
+***strc_commandline.py -***
+
+This the reach_circle_commandline script extended to 2 balls. Green ball has to evade red ball and reach goal
+
+***strc_commandline_test.py -***
+
+This the reach_circle_commandline_test script extended to 2 balls. Green ball has to evade red ball and reach goal
+
 ***Key parameters:***
 
 alpha - learning rate
