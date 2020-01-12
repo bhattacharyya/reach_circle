@@ -7,7 +7,7 @@ import numpy as np
 alpha = 0.9
 gamma = 1.0
 epsilon = 0.0
-episodes = 20000 # Number of games to be played
+episodes = 25000 # Number of games to be played
 mov_list = [-40,-20,20,40] # Possible changes to x or y position
 initial_pos_x1 = 40
 initial_pos_y1 = 80
